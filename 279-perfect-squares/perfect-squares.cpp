@@ -1,23 +1,33 @@
 class Solution {
 public:
-    int tn;
-    vector<vector<int>> dp;
-    int f(int ta,vector<int> &sq,int ind){
-        if(ta>tn || ind>=sq.size()) return INT_MAX;
-        if(ta==tn) return 0;
-        if(dp[ta][ind]!=-1) return dp[ta][ind];
-        int take=f(ta+sq[ind],sq,ind);
-        if(take!=INT_MAX) take+=1;
-        int nottake=f(ta,sq,ind+1);
-        return dp[ta][ind]=min(take,nottake);
-    }
     int numSquares(int n) {
-        tn=n;
         vector<int> squares;
         for(int i=1;i*i<=n;i++){
             squares.push_back(i*i);
         }
-        dp.resize(n+1,vector<int>(squares.size(),-1));
-        return f(0,squares,0);
+        queue<int>q;
+        vector<int> vis(n+1,0);
+        int ans=0;
+        q.push(n);
+        vis[n]=1;
+        while(!q.empty()){
+            int qs=q.size();
+            ans++;
+            for(int i=0;i<qs;i++){
+                int curr=q.front();
+                q.pop();
+                for(int sq:squares){
+                    if(curr<sq) break;
+                    int next=curr-sq;
+                    if(next==0) return ans;
+                    if(!vis[next]){
+                        vis[next]=1;
+                        q.push(next);
+                    }
+                }
+
+            }
+        }
+        return ans;
     }
 };
